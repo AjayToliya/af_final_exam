@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
+class SplashScreen extends StatelessWidget {
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  Timer() {
-    return;
-  }
-
   Widget build(BuildContext context) {
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pushNamed('/');
+    });
+
     return Scaffold(
-      body: Container(
-        child: Center(
-          child: Text("Welcome"),
-        ),
-      ),
+      body: Center(child: Text('Welcome')),
     );
   }
 }

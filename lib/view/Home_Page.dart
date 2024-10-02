@@ -1,8 +1,6 @@
 import 'package:af_final_exam/utils/Hepler/data_hepler.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/Hepler/dataBaseHepler.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -12,13 +10,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    DatabaseHelper.databaseHelper.initDataBase();
-  }
-
-  @override
   Widget build(BuildContext context) {
     TextEditingController name = TextEditingController();
     TextEditingController price = TextEditingController();
@@ -27,12 +18,7 @@ class _HomePageState extends State<HomePage> {
         title: Text("HomePage"),
         actions: [
           IconButton(
-            onPressed: () {
-              DatabaseHelper.databaseHelper.insertitem(
-                name: name.text,
-                price: price.text,
-              );
-            },
+            onPressed: () {},
             icon: Icon(Icons.add),
           )
         ],

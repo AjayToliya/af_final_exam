@@ -12,6 +12,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MaterialApp(
+    initialRoute: 'splash',
     routes: {
       'splash': (context) => SplashScreen(),
       '/': (context) => HomePage(),
