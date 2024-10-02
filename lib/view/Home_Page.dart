@@ -1,5 +1,6 @@
-import 'package:af_final_exam/utils/Hepler/data_hepler.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/Hepler/dataBaseHepler.dart'; // Adjust the import path according to your project structure
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,19 +10,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchItems();
+  }
+
+  Future<void> fetchItems() async {
+    items = await DatabaseHelper.databaseHelper.fetchAllItems();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController name = TextEditingController();
-    TextEditingController price = TextEditingController();
+    TextEditingController nameController = TextEditingController();
+    TextEditingController priceController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("HomePage"),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.add),
-          )
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -34,11 +43,11 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      controller: name,
+                      controller: nameController,
                       decoration: InputDecoration(labelText: 'Name'),
                     ),
                     TextFormField(
-                      controller: price,
+                      controller: priceController,
                       decoration: InputDecoration(labelText: 'Price'),
                     ),
                   ],
@@ -51,8 +60,14 @@ class _HomePageState extends State<HomePage> {
                     child: Text('Cancel'),
                   ),
                   TextButton(
-                    onPressed: () {
-                      Data.data.addItem(name: name.text, price: price.text);
+                    onPressed: () async {
+                      await DatabaseHelper.databaseHelper.insertItem(
+                        name: nameController.text,
+                        price: priceController.text,
+                      );
+                      nameController.clear();
+                      priceController.clear();
+                      await fetchItems();
                       Navigator.of(context).pop();
                     },
                     child: Text('Save'),
@@ -65,20 +80,22 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
       ),
       body: ListView.builder(
-        itemCount: 5,
-        itemBuilder: (context, Index) {
-          return Column(
-            children: [
-              SizedBox(
-                height: 200,
-                child: ListTile(
-                  // leading: Text("${Index}"),
-                  trailing:
-                      IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-                  title: Text("1"),
-                ),
-              ),
-            ],
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          var item = items[index];
+          return ListTile(
+            leading: CircleAvatar(
+              child: Text(item['id'].toString()),
+            ),
+            title: Text(item['name']),
+            subtitle: Text("Price: \$${item['price']}"),
+            trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () async {
+                await DatabaseHelper.databaseHelper.deleteItem(id: item['id']);
+                await fetchItems();
+              },
+            ),
           );
         },
       ),
